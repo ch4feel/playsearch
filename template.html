@@ -28,16 +28,17 @@
 </div>
 <script>
 	var html = '';
+	var length = json.length;
 
-	$(json).each(function(){
+	for(var i = 0; i < length; i++) {
 		html += '<div class="area_rank"><h2 class="h_time">';
-		html += $(this)[0].time;
+		html += json[length-i-1].time;
 		html += '</h2><ol class="lst_rank">';
-		$($(this)[0].data).each(function(){
+		$(json[i].data).each(function(){
 			html += '<li data-rank="' + $(this)[0].rank + '" class="' + $(this)[0].type + '"><a href="' + $(this)[0].url + '" target="_blank">' + $(this)[0].keyword + '</a></li>'
 		});
 		html += '</ol></div>';
-	});
+	}
 
 	$('#wrap').prepend(html);
 
