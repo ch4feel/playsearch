@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>실급검놀이</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<style>
+	html,body{margin:0;padding:0;font-size:12px;color:#333}
+	h1{height:30px;margin:0;padding:15px 0 0 15px;background-color:#333;font-size:14px;color:#fff}
+	#wrap{overflow:hidden;padding:20px 0 0 10px}
+	.h_time{padding-bottom:10px;font-size:12px;color:#390;text-align:center;border-bottom:1px solid #ddd}
+	.area_rank{float:left;width:141px;margin:0 10px 10px 0;border:2px solid #4a0}
+	.lst_rank{padding-left:30px}
+	.lst_rank li{padding-bottom:3px}
+	.lst_rank a{color:#333;text-decoration:none}
+	.lst_rank .new a{color:#b33}
+	.lst_rank a:hover{color:#33d;text-decoration:underline}
+</style>
+<script>
+	var json = [];
+</script>
+<script src="http://code.jquery.com/jquery.js"></script>
+</head>
+<body>
+<h1>실급검을 매시간 마다 가져온다!</h1>
+<div id="wrap">
+
+</div>
+<script>
+	var html = '';
+
+	$(json).each(function(){
+		html += '<div class="area_rank"><h2 class="h_time">';
+		html += $(this)[0].time;
+		html += '</h2><ol class="lst_rank">';
+		$($(this)[0].data).each(function(){
+			html += '<li data-rank="' + $(this)[0].rank + '" class="' + $(this)[0].type + '"><a href="' + $(this)[0].url + '" target="_blank">' + $(this)[0].keyword + '</a></li>'
+		});
+		html += '</ol></div>';
+
+		$('#wrap').prepend(html);
+
+	});
+</script>
+</body>
+</html>

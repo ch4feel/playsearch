@@ -1,5 +1,5 @@
 node_modules/
-favor.html
+favor.json
 nohup.out
 .*
 !.gitignore
