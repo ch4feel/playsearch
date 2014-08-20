@@ -1,0 +1,12 @@
+{
+  "name": "실급검놀이",
+  "version": "0.0.1",
+  "description": "시간별로 실급검을 가져와 보여준다",
+  "main": "app.favor.js",
+  "dependencies": {
+    "jsdom": "^0.11.1"
+  },
+  "devDependencies": {},
+  "author": "ch4feel@naver.com",
+  "license": "ISC"
+}
