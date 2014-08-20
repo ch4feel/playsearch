@@ -1,12 +1,24 @@
 {
-  "name": "실급검놀이",
+  "name": "playsearch",
   "version": "0.0.1",
-  "description": "시간별로 실급검을 가져와 보여준다",
+  "description": "실급검놀이",
   "main": "app.favor.js",
   "dependencies": {
-    "jsdom": "^0.11.1"
+    "cheerio": "^0.17.0",
+    "request": "^2.40.0"
   },
   "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ch4feel/playsearch.git"
+  },
   "author": "ch4feel@naver.com",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ch4feel/playsearch/issues"
+  },
+  "homepage": "https://github.com/ch4feel/playsearch"
 }
