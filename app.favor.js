@@ -2,8 +2,6 @@ var fs = require('fs'),
 	request = require('request'),
 	cheerio = require('cheerio');
 
-var html = '';
-
 request('http://www.naver.com', function(err, res, body){
 	var $html = cheerio.load(body);
 	var date = new Date();
