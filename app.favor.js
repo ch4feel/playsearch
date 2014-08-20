@@ -1,21 +1,33 @@
 var fs = require('fs'),
 	request = require('request'),
-	cheerio = require('cheerio');
+	cr = require('cheerio');
 
 request('http://www.naver.com', function(err, res, body){
-	var $html = cheerio.load(body);
+	var $html = cr.load(body);
 	var date = new Date();
-	var $ul = cheerio.load('<div class="area_rank"><h2 class="h_time">'+date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+'</h2><ol class="lst_rank">' + $html('#realrank').html() + '</ol></div>');
-	var fshtml = fs.readFileSync('/home/pi/myhome/favor.html', 'utf8');
+	var $ = cr.load($html('#realrank').html());
+	$('.ic, .tx, .rk, #lastrank').remove();
 
+	var json = {};
+	json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2);
+	json.data = [];
 
-	$ul('.ic, .tx, .rk, #lastrank').remove();
+	$('li').each(function(){
+		json.data.push({
+			rank: $(this).attr('value'),
+			keyword: $(this).find('a').text(),
+			url: $(this).find('a').attr('href'),
+			type: $(this).attr('class')
+		});
+	})
 
-	var $ = cheerio.load(fshtml);
+	var fsjson = eval(fs.readFileSync('favor.json', 'utf8'));
 
-	$('#wrap').prepend($ul.html());
+	fsjson.push(json);
 
-	fs.writeFileSync('/home/pi/myhome/favor.html', $.html(), 'utf8');
+	//console.log(JSON.stringify(fsjson));
+
+	fs.writeFileSync('favor.json', JSON.stringify(fsjson), 'utf8');
 
 });
 
