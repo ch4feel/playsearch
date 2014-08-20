@@ -1,6 +1,8 @@
 var fs = require('fs'),
 	request = require('request'),
 	cr = require('cheerio');
+	filepath = '/home/pi/myhome/';		// real path
+	//filepath = '';					// dev path
 
 request('http://www.naver.com', function(err, res, body){
 	var $html = cr.load(body);
@@ -21,13 +23,13 @@ request('http://www.naver.com', function(err, res, body){
 		});
 	})
 
-	var fsjson = eval(fs.readFileSync('favor.json', 'utf8'));
+	var fsjson = eval(fs.readFileSync(filepath+'favor.json', 'utf8'));
 
 	fsjson.push(json);
 
 	//console.log(JSON.stringify(fsjson));
 
-	fs.writeFileSync('favor.json', JSON.stringify(fsjson), 'utf8');
+	fs.writeFileSync(filepath+'favor.json', JSON.stringify(fsjson), 'utf8');
 
 });
 
