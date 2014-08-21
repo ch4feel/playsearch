@@ -54,6 +54,10 @@ io.sockets.on('connection',function(socket){
 	}, 1000);
 })
 
+io.sockets.on('disconnection', function(socket){
+	mtimer = null;
+})
+
 function getRank(socket){
 	if ((new Date()).getSeconds() == 0) {
 		request('http://www.naver.com', function(err, res, body){
