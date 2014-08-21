@@ -55,41 +55,44 @@ io.sockets.on('connection',function(socket){
 })
 
 function getRank(socket){
-	request('http://www.naver.com', function(err, res, body){
-		var $html = cheerio.load(body);
-		var date = new Date();
-		var $ = cheerio.load($html('#realrank').html());
-		$('.ic, .tx, .rk, #lastrank').remove();
+	if ((new Date()).getSeconds() == 0) {
+		request('http://www.naver.com', function(err, res, body){
+			var $html = cheerio.load(body);
+			var date = new Date();
+			var $ = cheerio.load($html('#realrank').html());
+			$('.ic, .tx, .rk, #lastrank').remove();
 
-		var json = {};
-		json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
-		if(date.getMinutes() == 0 && date.getSeconds() == 0)
-			json.type = 'oclock';
-		else
-			json.type = 'normal';
-		json.data = [];
+			var json = {};
+			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
+			if(date.getMinutes() == 0 && date.getSeconds() == 0)
+				json.type = 'oclock';
+			else
+				json.type = 'normal';
+			json.data = [];
 
-		$('li').each(function(){
-			json.data.push({
-				rank: $(this).attr('value'),
-				keyword: $(this).find('a').text(),
-				url: $(this).find('a').attr('href'),
-				type: $(this).attr('class')
-			});
-		})
+			$('li').each(function(){
+				json.data.push({
+					rank: $(this).attr('value'),
+					keyword: $(this).find('a').text(),
+					url: $(this).find('a').attr('href'),
+					type: $(this).attr('class')
+				});
+			})
 
-		socket.emit('realrank', json);
+			socket.emit('realrank', json);
 
-		if (json.type == 'oclock') {
-			if(date.getHours() == 6) {
-				var fsjson = [];
-			} else {
-				var fsjson = eval(fs.readFileSync(filepath+'favor.json', 'utf8'));
+			if (json.type == 'oclock') {
+				if(date.getHours() == 6) {
+					var fsjson = [];
+				} else {
+					var fsjson = eval(fs.readFileSync(filepath+'favor.json', 'utf8'));
+				}
+				fsjson.push(json);
+				fs.writeFileSync(filepath+'favor.json', JSON.stringify(fsjson), 'utf8');
 			}
-			fsjson.push(json);
-			fs.writeFileSync(filepath+'favor.json', JSON.stringify(fsjson), 'utf8');
-		}
-	});
+		});
+	}
+
 }
 
 String.prototype.string = function(len){
