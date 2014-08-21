@@ -19,6 +19,8 @@ var server = http.createServer(function (req, res) {
 
 }).listen(8080, "127.0.0.1");
 
+fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
+
 console.log('Server is running at port 8080.');
 
 var io = socketio.listen(server);
