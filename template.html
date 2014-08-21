@@ -32,9 +32,11 @@
 
 		socket.on('realrank', function(data){
 			renderReal(data);
+			console.log('Rank Data arrived at '+data.time);
 		});
 		socket.on('first', function(data){
 			renderReal(data);
+			console.log('First Rank Data arrived at '+data.time);
 		});
 
 		socket.emit('first');

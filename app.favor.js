@@ -19,11 +19,9 @@ var server = http.createServer(function (req, res) {
 
 }).listen(8080, "127.0.0.1");
 
-console.log('Server running at port 8080');
+console.log('Server is running at port 8080.');
 
 var io = socketio.listen(server);
-
-console.log('Sockets are on');
 
 io.sockets.on('connection',function(socket){
 	socket.on('first', function(){
