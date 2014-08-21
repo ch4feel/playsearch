@@ -88,9 +88,9 @@ function getRank(socket){
 			if (json.type == 'oclock') {
 				var fsjson = [];
 
-				if(date.getHours() != 6) {
+				//if(date.getHours() != 6) {
 					fsjson = eval(fs.readFileSync(filepath+'favor.json', 'utf8'));
-				}
+				//}
 
 				fsjson.push(json);
 				fs.writeFileSync(filepath+'favor.json', JSON.stringify(fsjson), 'utf8');
