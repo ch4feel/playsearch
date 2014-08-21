@@ -82,11 +82,12 @@ function getRank(socket){
 			socket.emit('realrank', json);
 
 			if (json.type == 'oclock') {
-				if(date.getHours() == 6) {
-					var fsjson = [];
-				} else {
-					var fsjson = eval(fs.readFileSync(filepath+'favor.json', 'utf8'));
+				var fsjson = [];
+
+				if(date.getHours() != 6) {
+					fsjson = eval(fs.readFileSync(filepath+'favor.json', 'utf8'));
 				}
+
 				fsjson.push(json);
 				fs.writeFileSync(filepath+'favor.json', JSON.stringify(fsjson), 'utf8');
 			}
