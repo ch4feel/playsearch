@@ -2,7 +2,8 @@ var fs = require('fs'),
 	http = require('http'),
 	request = require('request'),
 	cheerio = require('cheerio'),
-	socketio = require('socket.io');
+	socketio = require('socket.io'),
+	date = new Date(),
 	filepath = '';
 
 var server = http.createServer(function (req, res) {
@@ -29,7 +30,6 @@ io.sockets.on('connection',function(socket){
 	socket.on('first', function(){
 		request('http://www.naver.com', function(err, res, body){
 			var $html = cheerio.load(body);
-			var date = new Date();
 			var $ = cheerio.load($html('#realrank').html());
 			$('.ic, .tx, .rk, #lastrank').remove();
 
@@ -59,10 +59,9 @@ io.sockets.on('disconnection', function(socket){
 })
 
 function getRank(socket){
-	if ((new Date()).getSeconds() == 0) {
+	if (date.getSeconds() == 0) {
 		request('http://www.naver.com', function(err, res, body){
 			var $html = cheerio.load(body);
-			var date = new Date();
 			var $ = cheerio.load($html('#realrank').html());
 			$('.ic, .tx, .rk, #lastrank').remove();
 
