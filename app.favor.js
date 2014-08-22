@@ -68,7 +68,7 @@ function getRank(socket){
 
 			var json = {};
 			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
-			if(date.getMinutes() == 0 && date.getSeconds() == 0)
+			if(date.getMinutes() == 0)
 				json.type = 'oclock';
 			else
 				json.type = 'normal';
