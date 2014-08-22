@@ -59,7 +59,7 @@ var mtimer = setInterval(function(){
 function getRank(){
 	var date = new Date();
 
-	if (date.getSeconds()%1 == 0) {
+	if (date.getSeconds() == 0) {
 		request('http://www.naver.com', function(err, res, body){
 			var $html = cheerio.load(body),
 				$ = cheerio.load($html('#realrank').html()),
