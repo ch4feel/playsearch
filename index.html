@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 <head>
 <meta charset="utf-8">
 <title>실급검놀이</title>
@@ -19,41 +19,40 @@
 	.lst_rank .new a{color:#b33}
 	.lst_rank a:hover{color:#33d;text-decoration:underline}
 </style>
-<script>
-	var json = [];
-</script>
-<script src="http://code.jquery.com/jquery.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/angular/angular.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-	$(function(){
-		var socket = io.connect();
-		var html = '';
-		var length = json.length;
+	var json = [];
+	var rank_json = [];
+	var rank_options = {
+		async : false,
+		url : '/favor.json',
+		dataType : 'json',
+		success : function(result, status){rank_json = result;console.log(rank_json);}
+	}
 
-		socket.on('realrank', function(data){
-			renderReal(data);
-			console.log(data.type + ' data arrived at '+data.time);
-		});
-		socket.on('init', function(data){
-			renderReal(data);
-			console.log(data.type + ' data arrived at '+data.time);
-		});
+	$.ajax(rank_options);
 
-		socket.emit('first');
+	function init_list($scope){
+		$scope.ranklist = rank_json;
+		console.log($scope.ranklist);
+	}
 
-		html += '<div id="online" class="area_rank"><h2 class="h_time">현재 검색어 순위</h2><ol class="lst_rank" style="list-style:none;position:relative;height:170px;"><li style="position:absolute;top:50%;margin-top:-14px">Loading...</li></ol></div>';
+	var socket = io.connect();
+	var html = '';
+	var length = json.length;
 
-		for(var i = 0; i < length; i++) {
-			html += '<div ';
-			html += 'class="area_rank"><h2 class="h_time">';
-			html += json[length-i-1].time;
-			html += '</h2>';
-			html += makeList(json[length-i-1].data);
-			html += '</div>';
-		}
+	socket.on('realrank', function(data){
+		renderReal(data);
+		console.log(data.type + ' data arrived at '+data.time);
+	});
+	socket.on('init', function(data){
+		renderReal(data);
+		console.log(data.type + ' data arrived at '+data.time);
+	});
 
-		$('#wrap').prepend(html);
-	})
+	socket.emit('first');
 
 	function renderReal(json){
 
@@ -83,8 +82,19 @@
 </head>
 <body>
 <h1>실시간 급상승 검색어 <span class="uptime">updated <span id="time"></span></span></h1>
-<div id="wrap">
-
+<div id="wrap" ng-controller="init_list" >
+	<div id="online" class="area_rank">
+		<h2 class="h_time">현재 검색어 순위</h2>
+		<ol class="lst_rank" style="list-style:none;position:relative;height:170px;">
+			<li style="position:absolute;top:50%;margin-top:-14px">Loading...</li>
+		</ol>
+	</div>
+	<div class="area_rank" ng-repeat="rank in ranklist | orderBy:'idx':true">
+		<h2 class="h_time">{{rank.time}}</h2>
+		<ol class="lst_rank">
+			<li class="{{item.type}}" data-rank="{{item.rank}" ng-repeat="item in rank.data"><a href="{{item.url}}" target="_blank">{{item.keyword}}</a></li>
+		</ol>
+	</div>
 </div>
 </body>
 </html>

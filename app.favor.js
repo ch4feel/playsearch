@@ -1,28 +1,22 @@
 var fs = require('fs'),
 	http = require('http'),
+	express = require('express'),
+	socketio = require('socket.io'),
 	request = require('request'),
 	cheerio = require('cheerio'),
-	socketio = require('socket.io'),
 	filepath = '';
 
-var server = http.createServer(function (req, res) {
-
-	var template = fs.readFileSync(filepath+'template.html','utf8');
-	var json = fs.readFileSync(filepath+'favor.json','utf8');
-
-	var $ = cheerio.load(template);
-
-	$('head').append('<script>json = eval('+json+');</script>');
-
-	res.writeHead(200, {'Content-Type': 'text/html'});
-	res.end($.html());
-
-}).listen(8080, "127.0.0.1");
-
-fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
-console.log('Server is running at port 8080.');
-
+var app = express();
+var server = http.createServer(app).listen(8080);
 var io = socketio.listen(server);
+
+app.use(function(req, res, next){
+	var date = new Date();
+	console.log('%s %s %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), req.method, req.url);
+	next();
+});
+
+app.use(express.static(__dirname+'/'));
 
 io.sockets.on('connection', function(socket){
 	socket.on('first', function(){
@@ -36,6 +30,7 @@ io.sockets.on('connection', function(socket){
 
 			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
 			json.type = 'init';
+			json.idx = 0;
 			json.data = [];
 
 			$('li').each(function(){
@@ -47,14 +42,15 @@ io.sockets.on('connection', function(socket){
 				});
 			})
 			socket.emit('init', json);
+			console.log(json.time + ' init data send.');
 		});
 	});
 });
 
+fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
+console.log('Express server listening on port 8080');
 
-var mtimer = setInterval(function(){
-	getRank();
-}, 1000);
+var mtimer = setInterval(getRank, 1000);
 
 function getRank(){
 	var date = new Date();
@@ -84,6 +80,7 @@ function getRank(){
 			})
 
 			io.emit('realrank', json);
+			console.log(json.time + ' normal data send');
 
 			if (json.type == 'oclock' && json.time) {
 				var fsjson = [];
@@ -92,9 +89,9 @@ function getRank(){
 					fsjson.push(json);
 					fs.writeFile(filepath+'favor.json', JSON.stringify(fsjson), 'utf8', function(error){
 						if(error)
-							console.log(json.time + ': JSON Reset error');
+							console.log(json.time + ' JSON Reset error');
 						else
-							console.log(json.time + ': JSON Reset');
+							console.log(json.time + ' JSON Reset');
 					});
 				} else {
 					fs.readFile(filepath+'favor.json', 'utf8', function(err,data){
@@ -102,9 +99,9 @@ function getRank(){
 						fsjson.push(json);
 						fs.writeFile(filepath+'favor.json', JSON.stringify(fsjson), 'utf8', function(error){
 							if(error)
-								console.log(json.time + ': JSON Write error - ' + error);
+								console.log(json.time + ' JSON Write error - ' + error);
 							else
-								console.log(json.time + ': JSON Writing completed');
+								console.log(json.time + ' JSON Writing completed');
 						});
 					});
 				}
