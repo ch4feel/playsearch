@@ -1,0 +1,24 @@
+{
+  "name": "playsearch",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ch4feel/playsearch",
+  "authors": [
+    "LeeKeonJun <ch4feel@nhn.com>"
+  ],
+  "main": "app.favor.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.23",
+    "jquery": "~2.1.1"
+  }
+}
