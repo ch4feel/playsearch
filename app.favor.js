@@ -64,7 +64,7 @@ function getRank(){
 			$('.ic, .tx, .rk, #lastrank').remove();
 
 			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
-			if(date.getMinutes() == 0)
+			if(date.getSeconds() == 0)
 				json.type = 'oclock';
 			else
 				json.type = 'normal';
@@ -86,6 +86,7 @@ function getRank(){
 				var fsjson = [];
 
 				if(date.getDate() == 1 && date.getHours() == 0 && date.getMinutes() == 0) {
+					json.idx = 1;
 					fsjson.push(json);
 					fs.writeFile(filepath+'favor.json', JSON.stringify(fsjson), 'utf8', function(error){
 						if(error)
@@ -96,6 +97,7 @@ function getRank(){
 				} else {
 					fs.readFile(filepath+'favor.json', 'utf8', function(err,data){
 						fsjson = eval(data);
+						json.idx = fsjson.length+1;
 						fsjson.push(json);
 						fs.writeFile(filepath+'favor.json', JSON.stringify(fsjson), 'utf8', function(error){
 							if(error)
