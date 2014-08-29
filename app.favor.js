@@ -26,6 +26,7 @@ app.use('/favor.json', function(req, res, next){
 			res.writeHead(200, {'Content-Type':'application/json'});
 			res.end(JSON.stringify(result));
 		});
+		db.close();
 
 	})
 });
@@ -107,6 +108,7 @@ function getRank(){
 						else
 							console.log(json.time + ' DB Insert completed');
 					});
+					db.close();
 				})
 			}
 		});
