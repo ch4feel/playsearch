@@ -89,7 +89,7 @@
 			<li style="position:absolute;top:50%;margin-top:-14px">Loading...</li>
 		</ol>
 	</div>
-	<div class="area_rank" ng-repeat="rank in ranklist | orderBy:'idx':true">
+	<div class="area_rank" ng-repeat="rank in ranklist | orderBy:'_id':true">
 		<h2 class="h_time">{{rank.time}}</h2>
 		<ol class="lst_rank">
 			<li class="{{item.type}}" data-rank="{{item.rank}" ng-repeat="item in rank.data"><a href="{{item.url}}" target="_blank">{{item.keyword}}</a></li>

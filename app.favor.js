@@ -4,6 +4,7 @@ var fs = require('fs'),
 	socketio = require('socket.io'),
 	request = require('request'),
 	cheerio = require('cheerio'),
+	mongo = require('mongodb').MongoClient;
 	filepath = '';
 
 var app = express();
@@ -14,6 +15,19 @@ app.use(function(req, res, next){
 	var date = new Date();
 	console.log('%s %s %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), req.method, req.url);
 	next();
+});
+
+app.use('/favor.json', function(req, res, next){
+	mongo.connect('mongodb://127.0.0.1:27017/playsearch', function(err, db) {
+		if(err) throw err;
+
+		var collection = db.collection('rank');
+		collection.find().toArray(function(err,result){
+			res.writeHead(200, {'Content-Type':'application/json'});
+			res.end(JSON.stringify(result));
+		});
+
+	})
 });
 
 app.use(express.static(__dirname+'/'));
@@ -30,7 +44,6 @@ io.sockets.on('connection', function(socket){
 
 			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
 			json.type = 'init';
-			json.idx = 0;
 			json.data = [];
 
 			$('li').each(function(){
@@ -83,30 +96,18 @@ function getRank(){
 			console.log(json.time + ' normal data send');
 
 			if (json.type == 'oclock' && json.time) {
-				var fsjson = [];
 
-				if(date.getDate() == 1 && date.getHours() == 0 && date.getMinutes() == 0) {
-					json.idx = 1;
-					fsjson.push(json);
-					fs.writeFile(filepath+'favor.json', JSON.stringify(fsjson), 'utf8', function(error){
-						if(error)
-							console.log(json.time + ' JSON Reset error');
+				mongo.connect('mongodb://127.0.0.1:27017/playsearch', function(err, db) {
+					if(err) throw err;
+
+					var collection = db.collection('rank');
+					collection.insert(json, function(err, docs) {
+						if(err)
+							console.log(json.time + ' DB Insert error - ' + err);
 						else
-							console.log(json.time + ' JSON Reset');
+							console.log(json.time + ' DB Insert completed');
 					});
-				} else {
-					fs.readFile(filepath+'favor.json', 'utf8', function(err,data){
-						fsjson = eval(data);
-						json.idx = fsjson.length+1;
-						fsjson.push(json);
-						fs.writeFile(filepath+'favor.json', JSON.stringify(fsjson), 'utf8', function(error){
-							if(error)
-								console.log(json.time + ' JSON Write error - ' + error);
-							else
-								console.log(json.time + ' JSON Writing completed');
-						});
-					});
-				}
+				})
 			}
 		});
 	}
