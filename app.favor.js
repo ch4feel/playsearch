@@ -22,7 +22,7 @@ app.use('/favor.json', function(req, res, next){
 		if(err) throw err;
 
 		var collection = db.collection('rank');
-		collection.find().limit(24).toArray(function(err,result){
+		collection.find({}).limit(24).toArray(function(err,result){
 			res.writeHead(200, {'Content-Type':'application/json'});
 			res.end(JSON.stringify(result));
 		});
