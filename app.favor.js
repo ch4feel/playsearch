@@ -78,10 +78,9 @@ function getRank(){
 			$('.ic, .tx, .rk, #lastrank').remove();
 
 			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
-			if(date.getSeconds() == 0) {
-                console.log(date.getHours());
+			if(date.getMinutes() == 0)
                 json.type = 'oclock';
-            } else
+            else
 				json.type = 'normal';
 			json.data = [];
 
