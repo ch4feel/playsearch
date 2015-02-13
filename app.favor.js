@@ -23,11 +23,11 @@ app.use('/favor.json', function(req, res, next){
 
 		var collection = db.collection('rank');
 		collection.find({}).limit(24).toArray(function(err,result){
+            if(err) console.log(err);
 			res.writeHead(200, {'Content-Type':'application/json'});
 			res.end(JSON.stringify(result));
+            db.close();
 		});
-		db.close();
-
 	})
 });
 
@@ -78,9 +78,10 @@ function getRank(){
 			$('.ic, .tx, .rk, #lastrank').remove();
 
 			json.time = date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2);
-			if(date.getMinutes() == 0)
-				json.type = 'oclock';
-			else
+			if(date.getSeconds() == 0) {
+                console.log(date.getHours());
+                json.type = 'oclock';
+            } else
 				json.type = 'normal';
 			json.data = [];
 
@@ -107,8 +108,8 @@ function getRank(){
 							console.log(json.time + ' DB Insert error - ' + err);
 						else
 							console.log(json.time + ' DB Insert completed');
+                        db.close();
 					});
-					db.close();
 				})
 			}
 		});
