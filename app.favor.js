@@ -102,10 +102,6 @@ io.sockets.on('connection', function(socket){
     });
 });
 
-//fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
-var tmp_date = new Date();
-console.log('%s %s', tmp_date.getFullYear()+'.'+(tmp_date.getMonth()+1)+'.'+tmp_date.getDate()+' '+tmp_date.getHours().zf(2)+':'+tmp_date.getMinutes().zf(2)+':'+tmp_date.getSeconds().zf(2), 'Express server listening on port 8080');
-
 var mtimer = setInterval(getRank, 1000);
 
 function getRank(){
@@ -177,7 +173,7 @@ function getRank(){
             });
 
             io.emit('realrank2', json);
-            console.log(json.time + ' DAUM normal data send');
+            //console.log(json.time + ' DAUM normal data send');
 
             if (json.type == 'oclock' && json.time) {
 
@@ -205,3 +201,6 @@ String.prototype.string = function(len){
 String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
 Number.prototype.zf = function(len){return this.toString().zf(len);};
 
+//fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
+var tmp_date = new Date();
+console.log('%s %s', tmp_date.getFullYear()+'.'+(tmp_date.getMonth()+1)+'.'+tmp_date.getDate()+' '+tmp_date.getHours().zf(2)+':'+tmp_date.getMinutes().zf(2)+':'+tmp_date.getSeconds().zf(2), 'Express server listening on port 8080');
