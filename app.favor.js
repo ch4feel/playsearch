@@ -13,7 +13,7 @@ var io = socketio.listen(server);
 
 app.use(function(req, res, next){
     var date = new Date();
-    console.log('%s %s %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), req.method, req.url);
+    console.log('%s %s %s from %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), req.method, req.url, req.headers['x-forwarded-for'] || req.connection.remoteAddress);
     next();
 });
 
@@ -44,8 +44,12 @@ app.use('/favor2.json', function(req, res, next){
         });
     });
 });
+app.use(express.static(__dirname+'/'),function(req,res,next){
+    res.writeHead(404, {'Content-Type':'text/plain'});
+    res.end('Get out!!!');
+});
 
-app.use(express.static(__dirname+'/'));
+//app.use(express.static(__dirname+'/'));
 
 io.sockets.on('connection', function(socket){
     socket.on('first', function(){
