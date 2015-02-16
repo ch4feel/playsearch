@@ -13,7 +13,7 @@ var io = socketio.listen(server);
 
 app.use(function(req, res, next){
     var date = new Date();
-    console.log('%s %s %s from %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), req.method, req.url, req.headers['X-Forwarded-For'] || req.connection.remoteAddress);
+    console.log('%s %s %s from %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), req.method, req.url, req.headers['x-forwarded-for'] || req.connection.remoteAddress);
     next();
 });
 
