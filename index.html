@@ -5,8 +5,9 @@
 <title>실급검놀이</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 <style>
-	html,body{margin:0;padding:0;font-size:12px;color:#333}
+	html,body{margin:0;padding:0;font-family:AppleSDGothicNeo-Light, HelveticaNeue-Light, Helvetica, Sans-serif;font-size:12px;color:#333}
 	h1{position:relative;height:30px;margin:0;padding:15px 0 0 15px;background-color:#333;font-size:14px;color:#fff}
+	ol{list-style-position:inside}
 	.uptime{font-size:12px;color:#999;font-weight:normal}
 	#wrap{overflow:hidden;padding:10px}
 	.container{float:left;width:50%}
@@ -18,7 +19,7 @@
 	.area_rank#online2{border-color:#4e82ee}
 	.area_rank#online .h_time{background-color:#5b0;color:#fff}
 	.area_rank#online2 .h_time{background-color:#4e82ee;color:#fff}
-	.lst_rank{padding-left:30px}
+	.lst_rank{padding-left:10px}
 	.lst_rank li{overflow:hidden;padding-bottom:3px;white-space:nowrap;text-overflow:ellipsis}
 	.lst_rank a{color:#333;text-decoration:none}
 	.lst_rank .new a{color:#b33;font-weight:bold}
@@ -110,7 +111,7 @@
 <div id="wrap">
 	<div class="container" ng-controller="init_list">
 		<div id="online" class="area_rank">
-			<h2 class="h_time">NAVER 현재 검색어</h2>
+			<h2 class="h_time">NAVER 현재</h2>
 			<ol class="lst_rank" style="list-style:none;position:relative;height:170px;">
 			<li style="position:absolute;top:50%;margin-top:-14px">Loading...</li>
 			</ol>
@@ -124,7 +125,7 @@
 	</div>
 	<div class="container daum" ng-controller="init_list2">
 		<div id="online2" class="area_rank">
-			<h2 class="h_time">DAUM 현재 검색어</h2>
+			<h2 class="h_time">DAUM 현재</h2>
 			<ol class="lst_rank" style="list-style:none;position:relative;height:170px;">
 			<li style="position:absolute;top:50%;margin-top:-14px">Loading...</li>
 			</ol>
