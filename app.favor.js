@@ -23,7 +23,7 @@ app.use('/favor.json', function(req, res, next){
 
         var collection = db.collection('rank');
         collection.find({}).sort({_id:-1}).limit(9).toArray(function(err,result){
-            if(err) console.log(err);
+            if(err) throw err;
             res.writeHead(200, {'Content-Type':'application/json'});
             res.end(JSON.stringify(result));
             db.close();
@@ -37,7 +37,7 @@ app.use('/favor2.json', function(req, res, next){
 
         var collection = db.collection('rank2');
         collection.find({}).sort({_id:-1}).limit(9).toArray(function(err,result){
-            if(err) console.log(err);
+            if(err) throw err;
             res.writeHead(200, {'Content-Type':'application/json'});
             res.end(JSON.stringify(result));
             db.close();
@@ -74,7 +74,7 @@ io.sockets.on('connection', function(socket){
                 });
             })
             socket.emit('init', json);
-            console.log(json.time + ' NAVER init data send.');
+            //console.log(json.time + ' NAVER init data send.');
         });
         request('http://www.daum.net', function(err, res, body){
             var $html = cheerio.load(body),
@@ -97,12 +97,12 @@ io.sockets.on('connection', function(socket){
                 });
             });
             socket.emit('init2', json);
-            console.log(json.time + ' DAUM init data send.');
+            //console.log(json.time + ' DAUM init data send.');
         });
     });
 });
 
-fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
+//fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
 console.log('Express server listening on port 8080');
 
 var mtimer = setInterval(getRank, 1000);
@@ -135,7 +135,7 @@ function getRank(){
             })
 
             io.emit('realrank', json);
-            console.log(json.time + ' NAVER normal data send');
+            //console.log(json.time + ' NAVER normal data send');
 
             if (json.type == 'oclock' && json.time) {
 
@@ -144,10 +144,9 @@ function getRank(){
 
                     var collection = db.collection('rank');
                     collection.insert(json, function(err, docs) {
-                        if(err)
-                            console.log(json.time + ' NAVER DB Insert error - ' + err);
-                        else
-                            console.log(json.time + ' NAVER DB Insert completed');
+                        if(err) throw err;
+                        //else
+                            //console.log(json.time + ' NAVER DB Insert completed');
                         db.close();
                     });
                 })
@@ -186,10 +185,9 @@ function getRank(){
 
                     var collection = db.collection('rank2');
                     collection.insert(json, function(err, docs) {
-                        if(err)
-                            console.log(json.time + ' DAUM DB Insert error - ' + err);
-                        else
-                            console.log(json.time + ' DAUM DB Insert completed');
+                        if(err) throw err;
+                        //else
+                            //console.log(json.time + ' DAUM DB Insert completed');
                         db.close();
                     });
                 })
