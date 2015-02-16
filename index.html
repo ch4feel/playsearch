@@ -8,15 +8,20 @@
 	html,body{margin:0;padding:0;font-size:12px;color:#333}
 	h1{position:relative;height:30px;margin:0;padding:15px 0 0 15px;background-color:#333;font-size:14px;color:#fff}
 	.uptime{font-size:12px;color:#999;font-weight:normal}
-	#wrap{overflow:hidden;padding:20px 0 0 10px}
+	#wrap{overflow:hidden;padding:10px}
+	.container{float:left;width:50%}
 	.h_time{margin:0;padding:10px 0;font-size:12px;color:#390;text-align:center;border-bottom:1px solid #ddd}
-	.area_rank{float:left;width:141px;margin:0 10px 10px 0;border:2px solid #390}
+	.daum .h_time{color:#4e82ee}
+	.area_rank{margin:0 5px 10px 0;border:2px solid #390}
+	.daum .area_rank{margin:0 0 10px 5px;border-color:#4e82ee}
 	.area_rank#online{border-color:#5b0}
+	.area_rank#online2{border-color:#4e82ee}
 	.area_rank#online .h_time{background-color:#5b0;color:#fff}
+	.area_rank#online2 .h_time{background-color:#4e82ee;color:#fff}
 	.lst_rank{padding-left:30px}
 	.lst_rank li{padding-bottom:3px}
 	.lst_rank a{color:#333;text-decoration:none}
-	.lst_rank .new a{color:#b33}
+	.lst_rank .new a{color:#b33;font-weight:bold}
 	.lst_rank a:hover{color:#33d;text-decoration:underline}
 </style>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -25,17 +30,29 @@
 <script>
 	var json = [];
 	var rank_json = [];
+	var rank_json2 = [];
 	var rank_options = {
 		async : false,
 		url : '/favor.json',
 		dataType : 'json',
 		success : function(result, status){rank_json = result;console.log(rank_json);}
 	}
+	var rank_options2 = {
+		async : false,
+		url : '/favor2.json',
+		dataType : 'json',
+		success : function(result, status){rank_json2 = result;console.log(rank_json2);}
+	}
 
 	$.ajax(rank_options);
+	$.ajax(rank_options2);
 
 	function init_list($scope){
 		$scope.ranklist = rank_json;
+		console.log($scope.ranklist);
+	}
+	function init_list2($scope){
+		$scope.ranklist = rank_json2;
 		console.log($scope.ranklist);
 	}
 
@@ -44,17 +61,25 @@
 	var length = json.length;
 
 	socket.on('realrank', function(data){
-		renderReal(data);
-		console.log(data.type + ' data arrived at '+data.time);
+		renderReal(data, '#online');
+		console.log(data.type + ' NAVER data arrived at '+data.time);
+	});
+	socket.on('realrank2', function(data){
+		renderReal(data, '#online2');
+		console.log(data.type + ' DAUM data arrived at '+data.time);
 	});
 	socket.on('init', function(data){
-		renderReal(data);
-		console.log(data.type + ' data arrived at '+data.time);
+		renderReal(data, '#online');
+		console.log(data.type + ' NAVER data arrived at '+data.time);
+	});
+	socket.on('init2', function(data){
+		renderReal(data, '#online2');
+		console.log(data.type + ' DAUM data arrived at '+data.time);
 	});
 
 	socket.emit('first');
 
-	function renderReal(json){
+	function renderReal(json,id){
 
 		var html = makeList(json.data);
 
@@ -62,10 +87,10 @@
 
 		if(json.type == 'oclock'){
 			html = '<div class="area_rank"><h2 class="h_time">' + json.time + '</h2>' + html + '</div>';
-			$('#online').after(html);
+			$(id).after(html);
 		} else {
-			$('#online .lst_rank').remove();
-			$('#online .h_time').after(html);
+			$(id+' .lst_rank').remove();
+			$(id+' .h_time').after(html);
 		}
 	}
 
@@ -82,18 +107,34 @@
 </head>
 <body>
 <h1>실시간 급상승 검색어 <span class="uptime">updated <span id="time"></span></span></h1>
-<div id="wrap" ng-controller="init_list" >
-	<div id="online" class="area_rank">
-		<h2 class="h_time">현재 검색어 순위</h2>
-		<ol class="lst_rank" style="list-style:none;position:relative;height:170px;">
+<div id="wrap">
+	<div class="container" ng-controller="init_list">
+		<div id="online" class="area_rank">
+			<h2 class="h_time">NAVER 현재 검색어</h2>
+			<ol class="lst_rank" style="list-style:none;position:relative;height:170px;">
 			<li style="position:absolute;top:50%;margin-top:-14px">Loading...</li>
-		</ol>
+			</ol>
+		</div>
+		<div class="area_rank" ng-repeat="rank in ranklist | orderBy:'_id':true">
+			<h2 class="h_time">{{rank.time}}</h2>
+			<ol class="lst_rank">
+			<li class="{{item.type}}" data-rank="{{item.rank}}" ng-repeat="item in rank.data"><a href="{{item.url}}" target="_blank">{{item.keyword}}</a></li>
+			</ol>
+		</div>
 	</div>
-	<div class="area_rank" ng-repeat="rank in ranklist | orderBy:'_id':true">
-		<h2 class="h_time">{{rank.time}}</h2>
-		<ol class="lst_rank">
-			<li class="{{item.type}}" data-rank="{{item.rank}" ng-repeat="item in rank.data"><a href="{{item.url}}" target="_blank">{{item.keyword}}</a></li>
-		</ol>
+	<div class="container daum" ng-controller="init_list2">
+		<div id="online2" class="area_rank">
+			<h2 class="h_time">DAUM 현재 검색어</h2>
+			<ol class="lst_rank" style="list-style:none;position:relative;height:170px;">
+			<li style="position:absolute;top:50%;margin-top:-14px">Loading...</li>
+			</ol>
+		</div>
+		<div class="area_rank" ng-repeat="rank in ranklist | orderBy:'_id':true">
+			<h2 class="h_time">{{rank.time}}</h2>
+			<ol class="lst_rank">
+			<li class="{{item.type}}" data-rank="{{item.rank}}" ng-repeat="item in rank.data"><a href="{{item.url}}" target="_blank">{{item.keyword}}</a></li>
+			</ol>
+		</div>
 	</div>
 </div>
 </body>
