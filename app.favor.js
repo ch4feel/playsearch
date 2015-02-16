@@ -103,7 +103,8 @@ io.sockets.on('connection', function(socket){
 });
 
 //fs.writeFileSync(filepath+'nohup.out', '', 'utf8');
-console.log('Express server listening on port 8080');
+var tmp_date = new Date();
+console.log('%s %s', date.getFullYear()+'.'+(date.getMonth()+1)+'.'+date.getDate()+' '+date.getHours().zf(2)+':'+date.getMinutes().zf(2)+':'+date.getSeconds().zf(2), 'Express server listening on port 8080');
 
 var mtimer = setInterval(getRank, 1000);
 
