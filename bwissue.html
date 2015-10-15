@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+<meta charset="utf-8">
+<title>Break Water Issue</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<style>
+	html,body{margin:0;padding:0;font-family:AppleSDGothicNeo-Light, HelveticaNeue-Light, Helvetica, Sans-serif;font-size:12px;color:#333}
+	h1{height:30px;margin:0;padding:15px 0 0 15px;background-color:#333;font-size:16px;color:#fff}
+	footer{height:20px;margin:0;padding:7px 0 0 15px;border-top:1px solid #ddd;background-color:#f0f0f0;font-size:12px;color:#666;text-align:center;font-style: oblique}
+	ol{list-style-position:inside;list-style:none;margin:0;padding:0}
+	a{text-decoration: none;color:#333}
+	a:visited{color:#999}
+	.area_issue{margin: 0 15px}
+	.issue_item + .issue_item{border-top:1px solid #efefef}
+	.issue_item a{display:inline-block;padding:13px 0 11px;vertical-align:middle;font-size:14px;line-height:18px}
+</style>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/angular/angular.min.js"></script>
+<script>
+	var issue_json;
+
+	$.ajax({
+		async : false,
+		url : '/bwissue.json',
+		dataType : 'json',
+		success : function(result, status){
+			issue_json = result;
+			console.log(issue_json);
+		}
+	});
+
+	function init_list($scope){
+		$scope.issuelist = issue_json;
+	}
+
+</script>
+</head>
+<body ng-controller="init_list">
+	<h1>Break Water Issue </h1>
+	<div class="area_issue">
+		<ol class="lst_issue">
+			<li class="issue_item" ng-repeat="item in issuelist.data"><a href="{{item.url}}" target="_blank">{{item.keyword}}</a></li>
+		</ol>
+	</div>
+	<footer>
+		BWISSUE @{{issuelist.time}}
+	</footer>
+</body>
+</html>
